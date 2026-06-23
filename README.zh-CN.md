@@ -1,4 +1,4 @@
-# paper-agent
+# paperboy
 
 [English](README.md) | 中文
 
@@ -25,14 +25,14 @@
 **方式 A — marketplace（推荐）**
 
 ```
-/plugin marketplace add https://github.com/JingqiJi03/paper-agent
-/plugin install paper-agent
+/plugin marketplace add https://github.com/JingqiJi03/paperboy
+/plugin install paperboy
 ```
 
 **方式 B — 手动 clone**
 
 ```bash
-git clone https://github.com/JingqiJi03/paper-agent ~/.claude/plugins/paper-agent
+git clone https://github.com/JingqiJi03/paperboy ~/.claude/plugins/paperboy
 ```
 
 装好后重启或重载 Claude Code，即可用 `/paper-daily` 和 `/paper-weekly`。
