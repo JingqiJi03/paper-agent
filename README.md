@@ -1,96 +1,96 @@
 # paper-agent
 
-[English](README.en.md) | 中文
+English | [中文](README.zh-CN.md)
 
-> 每天自动读论文、出日报/周报的 Claude Code 插件。`/paper-daily <主题> <关键词>` 一键生成结构化日报。
+> A Claude Code plugin that reads papers for you every day and generates daily/weekly digests. `/paper-daily <topic> <keywords>` produces a structured report in one shot.
 
-## 它做什么
+## What it does
 
-- 按你给的 **主题 + 关键词** 搜 arXiv / Web（WebSearch 为主，不可用时自动退回 `curl` / arXiv API / GitHub raw）。
-- 对**已读论文去重**（基于 `papers/seen_papers.md`）。
-- 按**与主题的相关性**分高 / 中 / 低优先级。
-- 每篇重要论文用**六段式**总结：Challenge / Motivation / Insight / Main method / Effect / Results / Research Value。
-- 生成**中文日报**（默认）+ **英文 related-work** 段落；可切全英文。
-- `/paper-weekly` 把最近 7 天的日报综合成一份**周报**。
-- 所有文件写在你**当前工作目录**，插件本身不带任何个人数据，换机器拷过去照样用。
+- Searches arXiv / the web for your **topic + keywords** (WebSearch by default; falls back to `curl` / arXiv API / GitHub raw when unavailable).
+- **Deduplicates** against already-read papers (via `papers/seen_papers.md`).
+- Ranks papers by **relevance to your topic** — High / Medium / Low.
+- Summarizes every important paper in a **six-section structure**: Challenge / Motivation / Insight / Main method / Effect / Results / Research Value.
+- Generates a **daily report** (Chinese by default) + an **English related-work** section; can be switched to fully English.
+- `/paper-weekly` synthesizes the last 7 days of daily reports into a **weekly report**.
+- All files are written to your **current working directory** — the plugin itself carries no personal data, so it works anywhere you copy it.
 
-## 前置条件
+## Prerequisites
 
-- 已安装 [Claude Code](https://claude.com/claude-code) 并登录。
-- （可选）设置 `ANTHROPIC_API_KEY`。
-- 能用 WebSearch / WebFetch；不可用时会自动退回 `curl` + arXiv API。
+- [Claude Code](https://claude.com/claude-code) installed and logged in.
+- (Optional) `ANTHROPIC_API_KEY` set.
+- WebSearch / WebFetch available; falls back to `curl` + arXiv API when not.
 
-## 安装
+## Install
 
-**方式 A — marketplace（推荐）**
+**Option A — marketplace (recommended)**
 
 ```
-/plugin marketplace add <your-github-url>
+/plugin marketplace add https://github.com/JingqiJi03/paper-agent
 /plugin install paper-agent
 ```
 
-**方式 B — 手动 clone**
+**Option B — manual clone**
 
 ```bash
-git clone <your-github-url> ~/.claude/plugins/paper-agent
+git clone https://github.com/JingqiJi03/paper-agent ~/.claude/plugins/paper-agent
 ```
 
-装好后重启或重载 Claude Code，即可用 `/paper-daily` 和 `/paper-weekly`。
+Restart or reload Claude Code, then `/paper-daily` and `/paper-weekly` are available.
 
-## 用法
+## Usage
 
 ```
 /paper-daily robot manipulation VLA pi0 flow matching
 ```
 
-- 第一个词组 = 主题，后面 = 关键词。
-- 不带参数：`/paper-daily` → 读当前目录的 `memory.md` 复用上次配置。
-- 切英文日报：在参数里加 `lang=en`，或在 `memory.md` 写 `language: en`。
+- The first phrase = topic, the rest = keywords.
+- No args: `/paper-daily` → reads `memory.md` in the current directory to reuse the last config.
+- English report: add `lang=en` to the args, or set `language: en` in `memory.md`.
 
 ```
 /paper-weekly
 ```
 
-- 综合最近 7 天的日报 + 论文记录，输出周报。建议先连续跑几天 `/paper-daily` 再用。
+- Synthesizes the last 7 days of daily reports + paper records into a weekly report. Best run after several days of `/paper-daily`.
 
-## 它会在当前目录创建的文件
+## Files it creates in your current directory
 
-| 文件 | 作用 |
+| File | Purpose |
 |---|---|
-| `papers/seen_papers.md` | 已读论文清单（去重基准） |
-| `papers/<日期>/papers.md` | 当天所有论文的六段式总结 |
-| `reports/<日期>_morning.md` | 当天日报 |
-| `reports/<日期>_weekly.md` | 周报 |
-| `memory.md` | 首次运行自动生成，存主题/关键词/语言/监控清单 |
+| `papers/seen_papers.md` | list of already-read papers (dedup baseline) |
+| `papers/<date>/papers.md` | six-section summaries of all papers that day |
+| `reports/<date>_morning.md` | daily report |
+| `reports/<date>_weekly.md` | weekly report |
+| `memory.md` | auto-generated on first run; stores topic/keywords/language/watch-list |
 
-## 定制（`memory.md`）
+## Customization (`memory.md`)
 
-首次 `/paper-daily` 会自动生成 `memory.md`。你可以手动编辑：
+The first `/paper-daily` auto-generates `memory.md`. You can edit it manually:
 
 ```markdown
-topic: <一句话研究主题>
+topic: <one-line research topic>
 keywords:
-  - <关键词>
-  - <关键词>
-language: zh          # zh（默认，中文日报）或 en（英文日报）
-watch-repos:          # 可选：要监控的 GitHub awesome 列表 / 仓库
+  - <keyword>
+  - <keyword>
+language: zh          # zh (default, Chinese report) or en (English report)
+watch-repos:          # optional: GitHub awesome-lists / repos to monitor
   - <repo url>
 ```
 
-规则：**命令行参数优先于 `memory.md`**。所以临时换主题直接在 `/paper-daily` 后面带参数即可，不用改文件。
+Rule: **command-line args override `memory.md`**. So to change the topic temporarily, just pass args to `/paper-daily` — no need to edit the file.
 
-## 自检（安装后）
+## Self-check (after install)
 
-1. 新建一个空目录并 `cd` 进去。
-2. 跑：`/paper-daily retrieval-augmented generation RAG benchmark`
-3. 检查：
-   - 生成了 `papers/seen_papers.md`、`papers/<今天>/papers.md`、`reports/<今天>_morning.md`、`memory.md`。
-   - 日报含 **Top 3** 和**英文 related-work 句子**。
-   - 报告标题是 `# 今日 retrieval-augmented generation Paper 晨报`（动态拼接你的主题，证明没有写死领域）。
-   - `papers/seen_papers.md` 已记录今天看过的论文。
+1. Create an empty directory and `cd` into it.
+2. Run: `/paper-daily retrieval-augmented generation RAG benchmark`
+3. Verify:
+   - `papers/seen_papers.md`, `papers/<today>/papers.md`, `reports/<today>_morning.md`, `memory.md` were created.
+   - The daily report contains **Top 3** and an **English related-work** section.
+   - The report title is `# 今日 retrieval-augmented generation Paper 晨报` (dynamically built from your topic — proving no domain is hardcoded).
+   - `papers/seen_papers.md` recorded today's papers.
 
-如果当天没搜到新论文，日报仍会生成，并明确写"今日无新论文"——不会留空报告，也不会编造内容。
+If no new papers are found that day, the daily report is still generated and clearly states "no new papers today" — never an empty report, never fabricated content.
 
-## 许可
+## License
 
 MIT
