@@ -1,5 +1,7 @@
 # paper-agent
 
+[English](README.en.md) | 中文
+
 > 每天自动读论文、出日报/周报的 Claude Code 插件。`/paper-daily <主题> <关键词>` 一键生成结构化日报。
 
 ## 它做什么
