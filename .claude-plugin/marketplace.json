@@ -1,0 +1,15 @@
+{
+  "name": "paperboy",
+  "owner": {
+    "name": "jijingqi",
+    "url": "https://github.com/JingqiJi03"
+  },
+  "plugins": [
+    {
+      "name": "paperboy",
+      "source": ".",
+      "description": "Daily/weekly research-paper digest skills. /paper-daily <topic> <keywords> for a daily roundup, /paper-weekly for a weekly synthesis.",
+      "version": "0.1.0"
+    }
+  ]
+}
